@@ -7,6 +7,7 @@ namespace AngularNetCore.Persistance
     public class VegaDBContext : DbContext
     {
         public DbSet<Make> Makes { get; set; }
+        public DbSet<Feature> Features { get; set; }
         
         
         public VegaDBContext(DbContextOptions<VegaDBContext> options) : base(options){
