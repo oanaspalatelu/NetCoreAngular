@@ -1,6 +1,6 @@
 
+using AngularNetCore.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using AngularNetCore.Models;
 
 namespace AngularNetCore.Persistance
 {

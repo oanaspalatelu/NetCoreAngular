@@ -1,6 +1,6 @@
 namespace AngularNetCore.Controllers.Resouces
 {
-    public class FeatureResource
+    public class KeyValuePairResource
     {
          public int Id { get; set; }
         public string Name { get; set; }

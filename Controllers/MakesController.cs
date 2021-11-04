@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AngularNetCore.Controllers.Resouces;
-using AngularNetCore.Models;
+using AngularNetCore.Core.Models;
 using AngularNetCore.Persistance;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
