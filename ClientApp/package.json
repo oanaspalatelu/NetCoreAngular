@@ -28,6 +28,7 @@
     "jquery": "3.4.1",
     "oidc-client": "^1.9.1",
     "popper.js": "^1.16.0",
+    "raven-js": "^3.27.2",
     "rxjs": "^6.5.3",
     "zone.js": "0.9.1"
   },

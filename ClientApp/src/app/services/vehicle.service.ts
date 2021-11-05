@@ -17,4 +17,12 @@ export class VehicleService {
   getFeatures(): Observable<any[]>{
     return this.HttpClient.get<any[]>('/api/features');
   }
+
+  create(vehicle){
+    return this.HttpClient.post('/api/vehicle', vehicle);
+  }
+
+  getVehicle(id){
+    return this.HttpClient.get('/api/vehicle/' + id);
+  }
 }
