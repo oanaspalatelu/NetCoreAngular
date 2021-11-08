@@ -5,6 +5,7 @@ using AngularNetCore.Core.Models;
 using AngularNetCore.Core;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace AngularNetCore.Controllers
 {
@@ -101,6 +102,14 @@ namespace AngularNetCore.Controllers
             var vehicleResorce = mapper.Map<Vehicle, VehicleResource>(vehicle);
 
             return Ok(vehicleResorce);
+        }
+
+        [HttpGet]
+        public async Task<QueryResult<VehicleResource>> GetVehicles(VehicleQueryResource filterResource){
+            var filter = mapper.Map<VehicleQueryResource, VehicleQuery>(filterResource);
+            var queryResult = await repository.GetVehicles(filter);
+
+            return mapper.Map<QueryResult<Vehicle>, QueryResult<VehicleResource>>(queryResult);
         }
     }
 }

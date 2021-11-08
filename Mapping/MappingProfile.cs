@@ -11,6 +11,7 @@ namespace AngularNetCore.Mapping
         public MappingProfile()
         {
             //Domain to API Resource
+            CreateMap(typeof(QueryResult<>), typeof(QueryResultResource<>));
             CreateMap<Make, MakeResource>();
             CreateMap<Model, KeyValuePairResource>();
             CreateMap<Feature, KeyValuePairResource>();
@@ -23,6 +24,7 @@ namespace AngularNetCore.Mapping
             .ForMember(vr => vr.Features, opt => opt.MapFrom(v => v.Features.Select(vf => new KeyValuePairResource{ Id = vf.Feature.Id, Name = vf.Feature.Name})));
 
             //API Resource to Domain
+            CreateMap<VehicleQueryResource,VehicleQuery>();
             CreateMap<SaveVehicleResource, Vehicle>()
             .ForMember(v => v.Id, opt => opt.Ignore())
             .ForMember(v => v.ContactName , opt => opt.MapFrom(vr => vr.Contact.Name))
