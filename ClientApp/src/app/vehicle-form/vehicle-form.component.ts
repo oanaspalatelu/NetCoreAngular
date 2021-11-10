@@ -16,7 +16,6 @@ export class VehicleFormComponent implements OnInit {
   makes: any[];
   models: any[];
   features: any[];
-  sources: any[];
   vehicle: SaveVehicle = {
     id: 0,
     makeId: 0,
@@ -34,41 +33,33 @@ export class VehicleFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router) { 
       route.params.subscribe(p => {
-        this.vehicle.id = +p['id'];
-      })
+        this.vehicle.id = +p['id'] || 0;
+      });
     }
 
   ngOnInit() {
 
-    forkJoin([
+    var sources = [
       this.vehicleService.getMakes(),
       this.vehicleService.getFeatures(),
-      !isNaN(this.vehicle.id) ?  this.vehicleService.getVehicle(this.vehicle.id) : null
-    ]).subscribe(data =>{
+    ];
+
+    if (this.vehicle.id)
+      sources.push(this.vehicleService.getVehicle(this.vehicle.id));
+
+    forkJoin(sources).subscribe(data => {
       this.makes = data[0];
       this.features = data[1];
-      if(!isNaN(this.vehicle.id)){
+
+      if (this.vehicle.id) {
         this.setVehicle(data[2] as unknown as Vehicle);
         this.populateModels();
-      } 
-    }, err => {
-      if(err.status == 404){
-        console.log("ERROR 404");
-        this.router.navigate(['/']);
       }
+    }, err => {
+      if (err.status == 404)
+        this.router.navigate(['/home']);
     });
 
-    /*this.vehicleService.getMakes().subscribe(makes => this.makes = makes);
-    this.vehicleService.getFeatures().subscribe(features => this.features = features);
-    this.vehicleService.getVehicle(this.vehicle.id).subscribe(v => {
-      this.vehicle = v;
-    }, err => {
-      if(err.status == 404){
-        console.log("ERROR 404");
-        this.router.navigate(['/']);
-      }
-    })*/
-    
   }
 
   private setVehicle(v: Vehicle){
@@ -99,7 +90,7 @@ export class VehicleFormComponent implements OnInit {
     }
   }
 
-  submit(){
+  submit(){//
     if(this.vehicle.id){
       this.vehicleService.update(this.vehicle)
       .subscribe(x=> console.log("The vehicle was cucessfully updated!"))

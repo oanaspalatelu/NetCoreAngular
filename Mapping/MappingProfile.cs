@@ -12,6 +12,7 @@ namespace AngularNetCore.Mapping
         {
             //Domain to API Resource
             CreateMap(typeof(QueryResult<>), typeof(QueryResultResource<>));
+            CreateMap<Photo, PhotoResource>();
             CreateMap<Make, MakeResource>();
             CreateMap<Model, KeyValuePairResource>();
             CreateMap<Feature, KeyValuePairResource>();

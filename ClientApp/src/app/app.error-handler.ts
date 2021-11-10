@@ -13,6 +13,7 @@ export class AppErrorHandler implements ErrorHandler {
         Raven.captureException(error.originalError || error);
     }else{
         console.log("Error!!!");
+        console.log(error);
     }
      
   }

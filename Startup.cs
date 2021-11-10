@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AngularNetCore.Persistance;
 using AutoMapper;
 using AngularNetCore.Core;
+using AngularNetCore.Core.Models;
 
 namespace AngularNetCore
 {
@@ -23,9 +24,11 @@ namespace AngularNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));
             services.AddDbContext<VegaDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddAutoMapper();
             services.AddScoped<IVehicleRepository,VehicleRepository>();
+            services.AddScoped<IPhotoRepository,PhotoRepository>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
