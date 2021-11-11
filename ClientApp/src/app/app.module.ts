@@ -6,7 +6,7 @@ import { VehicleService } from './services/vehicle.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppErrorHandler } from './app.error-handler';
@@ -18,6 +18,11 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
 import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
+import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
+import { LoginButtonComponent } from './login-button/login-button.component';
+import { AuthenticationButtonComponent } from './authentication-button/authentication-button.component';
+import { SignupButtonComponent } from './signup-button/signup-button.component';
+import { LogoutButtonComponent } from './logout-button/logout-button.component';
 
 Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io/6050576').install();
 
@@ -31,12 +36,42 @@ Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io
     VehicleFormComponent,
     VehicleListComponent,
     PaginationComponent,
-    ViewVehicleComponent
+    ViewVehicleComponent,
+    LoginButtonComponent,
+    AuthenticationButtonComponent,
+    SignupButtonComponent,
+    LogoutButtonComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    // Import the module into the application, with configuration
+    AuthModule.forRoot({
+      domain: 'udemyvegaproj.eu.auth0.com',
+      clientId: 'WgbzN2Kjzbw1EDGBDuY6mjVOMWV0gVCT',
+      httpInterceptor: {
+        allowedList:[
+          //'/api','/api/*',
+          
+          {
+            uri: '/api/vehicle/*',
+            tokenOptions: {
+              audience: 'https://api.vega.com',
+              scope: 'read:vehicle',
+            },
+          },
+          {
+            uri: '/api/vehicles/*',
+            tokenOptions: {
+              audience: 'https://api.vega.com',
+              scope: 'read:vehicles',
+            },
+          }
+        ]
+      }
+      
+    }),
     RouterModule.forRoot([
       { path: '', redirectTo: 'vehicles', pathMatch: 'full' },
       { path: 'vehicles/new', component: VehicleFormComponent },
@@ -50,7 +85,8 @@ Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
     VehicleService,
-    PhotoService
+    PhotoService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

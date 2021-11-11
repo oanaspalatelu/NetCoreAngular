@@ -1,0 +1,13 @@
+
+<app-login-button *ngIf="(auth.isAuthenticated$ | async) === false">
+</app-login-button>
+
+<app-logout-button *ngIf="!auth.isAuthenticated$">
+</app-logout-button>
+
+<ul *ngIf="auth.user$ | async as user">
+  <li>{{ user.name }}</li>
+  <li>{{ user.email }}</li>
+</ul>
+
+<app-logout-button *ngIf="auth.isAuthenticated$ | async"> </app-logout-button>

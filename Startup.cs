@@ -9,6 +9,7 @@ using AngularNetCore.Persistance;
 using AutoMapper;
 using AngularNetCore.Core;
 using AngularNetCore.Core.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AngularNetCore
 {
@@ -36,6 +37,15 @@ namespace AngularNetCore
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = "https://udemyvegaproj.eu.auth0.com/";
+            options.Audience = "https://api.vega.com";
+        });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +70,9 @@ namespace AngularNetCore
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
