@@ -28,8 +28,8 @@
         </ul>
         <br/>
         <p>
-          <a class="btn btn-primary" [routerLink]="['/vehicles/edit/', vehicle.id]">Edit</a>
-          <button class="btn btn-danger" (click)="delete()">Delete</button>
+          <a class="btn btn-primary" *ngIf="auth.isAuthenticated$ | async" [routerLink]="['/vehicles/edit/', vehicle.id]">Edit</a>
+          <button class="btn btn-danger" *ngIf="auth.isAuthenticated$ | async" (click)="delete()">Delete</button>
           <a class="btn btn-default" [routerLink]="['/vehicles']">View All Vehicles</a>
         </p>
        </div>
@@ -37,7 +37,7 @@
         <!-- Photos tab -->
        <div id="photos" class="tab-pane fade">
         <h2>Photos</h2>
-        <input type="file" (change)="uploadPhoto()" #fileInput>
+        <input *ngIf="auth.isAuthenticated$ | async" type="file" (change)="uploadPhoto()" #fileInput>
         <img *ngFor="let photo of photos" src="/uploads/{{ photo.fileName }}" class="img-thumbnail">
        </div>
 

@@ -57,7 +57,7 @@ export class VehicleFormComponent implements OnInit {
       }
     }, err => {
       if (err.status == 404)
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
     });
 
   }
@@ -90,13 +90,19 @@ export class VehicleFormComponent implements OnInit {
     }
   }
 
-  submit(){//
+  submit(){
     if(this.vehicle.id){
       this.vehicleService.update(this.vehicle)
-      .subscribe(x=> console.log("The vehicle was cucessfully updated!"))
+      .subscribe(x=> {
+        console.log("The vehicle was cucessfully updated!");
+        this.router.navigate(['/']);
+      })
     }else{
       this.vehicleService.create(this.vehicle)
-      .subscribe(x=> console.log(x));
+      .subscribe(x=> {
+        console.log("Added vehicle: ", x);
+        this.router.navigate(['/']);
+        });
     }
   }
 

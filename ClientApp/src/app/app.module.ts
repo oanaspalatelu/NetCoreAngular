@@ -18,7 +18,7 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
 import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
-import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
+import { AuthHttpInterceptor, AuthModule, HttpMethod } from '@auth0/auth0-angular';
 import { LoginButtonComponent } from './login-button/login-button.component';
 import { AuthenticationButtonComponent } from './authentication-button/authentication-button.component';
 import { SignupButtonComponent } from './signup-button/signup-button.component';
@@ -56,18 +56,29 @@ Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io
           
           {
             uri: '/api/vehicle/*',
+            httpMethod: HttpMethod.Put,
             tokenOptions: {
               audience: 'https://api.vega.com',
-              scope: 'read:vehicle',
-            },
+            }
           },
+
           {
-            uri: '/api/vehicles/*',
+            uri: '/api/vehicle/*',
+            httpMethod: HttpMethod.Delete,
             tokenOptions: {
               audience: 'https://api.vega.com',
-              scope: 'read:vehicles',
-            },
-          }
+            }
+          },
+
+          {
+            uri: '/api/vehicle',
+            httpMethod: HttpMethod.Post,
+            tokenOptions: {
+              audience: 'https://api.vega.com',
+            }
+          },
+         
+
         ]
       }
       
