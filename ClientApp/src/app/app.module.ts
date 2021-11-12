@@ -8,6 +8,7 @@ import { NgModule, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { ChartsModule  } from 'ng2-charts'
 
 import { AppErrorHandler } from './app.error-handler';
 import { AppComponent } from './app.component';
@@ -23,6 +24,7 @@ import { LoginButtonComponent } from './login-button/login-button.component';
 import { AuthenticationButtonComponent } from './authentication-button/authentication-button.component';
 import { SignupButtonComponent } from './signup-button/signup-button.component';
 import { LogoutButtonComponent } from './logout-button/logout-button.component';
+import { ViewChartComponent } from './view-chart/view-chart.component';
 
 Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io/6050576').install();
 
@@ -40,20 +42,19 @@ Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io
     LoginButtonComponent,
     AuthenticationButtonComponent,
     SignupButtonComponent,
-    LogoutButtonComponent
+    LogoutButtonComponent,
+    ViewChartComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
+    ChartsModule,
     FormsModule,
-    // Import the module into the application, with configuration
     AuthModule.forRoot({
       domain: 'udemyvegaproj.eu.auth0.com',
       clientId: 'WgbzN2Kjzbw1EDGBDuY6mjVOMWV0gVCT',
       httpInterceptor: {
         allowedList:[
-          //'/api','/api/*',
-          
           {
             uri: '/api/vehicle/*',
             httpMethod: HttpMethod.Put,
@@ -61,7 +62,6 @@ Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io
               audience: 'https://api.vega.com',
             }
           },
-
           {
             uri: '/api/vehicle/*',
             httpMethod: HttpMethod.Delete,
@@ -69,7 +69,6 @@ Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io
               audience: 'https://api.vega.com',
             }
           },
-
           {
             uri: '/api/vehicle',
             httpMethod: HttpMethod.Post,
@@ -77,15 +76,13 @@ Raven.config('https://243b1651f96d443bac302e2cd14b2269@o1060761.ingest.sentry.io
               audience: 'https://api.vega.com',
             }
           },
-         
-
         ]
       }
-      
     }),
     RouterModule.forRoot([
       { path: '', redirectTo: 'vehicles', pathMatch: 'full' },
       { path: 'vehicles/new', component: VehicleFormComponent },
+      { path: 'vehicles/chart', component: ViewChartComponent },
       { path: 'vehicles/edit/:id', component: VehicleFormComponent },
       { path: 'vehicles/:id', component: ViewVehicleComponent },
       { path: 'vehicles', component: VehicleListComponent },

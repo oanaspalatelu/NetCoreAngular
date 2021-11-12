@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using AngularNetCore.Core.Models;
 
 namespace AngularNetCore.Extensions{
 
@@ -18,6 +19,17 @@ namespace AngularNetCore.Extensions{
                 return query.OrderByDescending(columnsMap[queryObject.SortBy]);
             }
 
+        }
+
+        public static IQueryable<Vehicle> ApplyFiltering(this IQueryable<Vehicle> query, VehicleQuery queryObject){
+            if(queryObject.MakeId.HasValue){
+                query = query.Where(v => v.Model.MakeId == queryObject.MakeId.Value);
+            }
+
+            if(queryObject.ModelId.HasValue){
+                query = query.Where(v => v.ModelId == queryObject.ModelId.Value);
+            }
+            return query;
         }
 
          public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, IQueryObject queryObj) {

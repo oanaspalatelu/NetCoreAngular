@@ -31,6 +31,8 @@ namespace AngularNetCore
             services.AddScoped<IVehicleRepository,VehicleRepository>();
             services.AddScoped<IPhotoRepository,PhotoRepository>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
+            services.AddTransient<IPhotoService,PhotoService>();
+            services.AddTransient<IPhotoStorage,FileSystemPhotoStorage>();
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

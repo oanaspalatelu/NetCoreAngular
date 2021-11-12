@@ -50,17 +50,9 @@ namespace AngularNetCore.Persistance
              var query = context.Vehicles
                  .Include(v => v.Model)
                  .ThenInclude(m => m.Make)
-                 .Include(v => v.Features)
-                 .ThenInclude(vf => vf.Feature)
                  .AsQueryable();
 
-            if(queryObject.MakeId.HasValue){
-                query = query.Where(v => v.Model.MakeId == queryObject.MakeId.Value);
-            }
-
-            if(queryObject.ModelId.HasValue){
-                query = query.Where(v => v.ModelId == queryObject.ModelId.Value);
-            }
+            query = query.ApplyFiltering(queryObject);
 
             var columnsMap = new Dictionary<string, Expression<Func<Vehicle, object>>>(){
                 ["make"] = v => v.Model.Make.Name,

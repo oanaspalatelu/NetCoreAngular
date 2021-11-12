@@ -21,17 +21,17 @@ namespace AngularNetCore.Controllers
     {
         private readonly IWebHostEnvironment host;
         private readonly IVehicleRepository repository;
-        private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly PhotoSettings photoSettings;
         private readonly IPhotoRepository photoRepostory;
+        private readonly IPhotoService photoService;
 
-        public PhotosController(IWebHostEnvironment host, IVehicleRepository repository, IUnitOfWork unitOfWork, IMapper mapper, IOptionsSnapshot<PhotoSettings> options,
-        IPhotoRepository photoRepostory)
+        public PhotosController(IWebHostEnvironment host, IVehicleRepository repository, IMapper mapper, IOptionsSnapshot<PhotoSettings> options,
+        IPhotoRepository photoRepostory, IPhotoService photoService)
         {
+            this.photoService = photoService;
             this.host = host;
             this.repository = repository;
-            this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.photoSettings = options.Value;
             this.photoRepostory = photoRepostory;
@@ -40,48 +40,43 @@ namespace AngularNetCore.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload([FromRoute] int vehicleId, [FromForm] IFormFile file)
         {
-            var vehicle = await  repository.GetVehicle(vehicleId, includeRelated: false);
-            if(vehicle == null){
+            var vehicle = await repository.GetVehicle(vehicleId, includeRelated: false);
+            if (vehicle == null)
+            {
                 return NotFound();
             }
-            if(file == null){
+            if (file == null)
+            {
                 return BadRequest("Null file");
             }
-            if(file.Length == 0){
+            if (file.Length == 0)
+            {
                 return BadRequest("Empty file");
             }
-            if(file.Length > photoSettings.MaxBytes){
+            if (file.Length > photoSettings.MaxBytes)
+            {
                 return BadRequest("Max file size exceeded");
             }
-            if(!photoSettings.IsSupported(file.FileName)){
+            if (!photoSettings.IsSupported(file.FileName))
+            {
                 return BadRequest("Invalid file type");
             }
 
             var uploadsFolderPath = Path.Combine(host.WebRootPath, "uploads");
-            if(!Directory.Exists(uploadsFolderPath)){
-                Directory.CreateDirectory(uploadsFolderPath);
-            }
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadsFolderPath, fileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create)){
-                await file.CopyToAsync(stream);
-            }
-
-            var photo = new Photo{ FileName = fileName };
-            vehicle.Photos.Add(photo);
-            await unitOfWork.CompleteAsync();
+            var photo = await photoService.UploadPhotoAsync(vehicle, file, uploadsFolderPath);
 
             return Ok(mapper.Map<Photo, PhotoResource>(photo));
         }
 
         [HttpGet]
-        public async Task<IEnumerable<PhotoResource>> GetPhotos(int vehicleId){
+        public async Task<IEnumerable<PhotoResource>> GetPhotos(int vehicleId)
+        {
 
-            var photos = await photoRepostory.GetPhotos(vehicleId); 
+            var photos = await photoRepostory.GetPhotos(vehicleId);
 
             return mapper.Map<IEnumerable<Photo>, IEnumerable<PhotoResource>>(photos);
-            
+
         }
 
     }
